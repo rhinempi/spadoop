@@ -43,7 +43,9 @@ public class Parameter {
 
     /* parameter IDs */
     private static final String
-            INPUT_FASTQ = "fastq",
+            INPUT_BZ2 = "bz2",
+            INPUT_GZ = "gz",
+            INPUT_SPLIT = "insplit",
             OUTPUT_FILE = "outfile",
             OUTPUT_FORMAT = "outfm",
             OUTPUT_OVERWRITE = "overwrite",
@@ -57,7 +59,9 @@ public class Parameter {
     public void putParameterID(){
         int o =0;
 
-        parameterMap.put(INPUT_FASTQ, o++);
+        parameterMap.put(INPUT_BZ2, o++);
+        parameterMap.put(INPUT_GZ, o++);
+        parameterMap.put(INPUT_SPLIT, o++);
         parameterMap.put(OUTPUT_FILE, o++);
         parameterMap.put(OUTPUT_FORMAT, o++);
         parameterMap.put(OUTPUT_OVERWRITE, o++);
@@ -70,9 +74,17 @@ public class Parameter {
 
 
 		/* use Object parameter of Options class to store parameter information */
-        parameter.addOption(OptionBuilder.withArgName("input fastq file")
-                .hasArg().withDescription("Input Next Generation Sequencing (NGS) data, usually fastq format file, as input file")
-                .create(INPUT_FASTQ));
+        parameter.addOption(OptionBuilder.withArgName("input bz2 file")
+                .hasArg().withDescription("Input Next Generation Sequencing (NGS) data, fastq .bz2 file")
+                .create(INPUT_BZ2));
+
+        parameter.addOption(OptionBuilder.withArgName("input gz file")
+                .hasArg().withDescription("Input Next Generation Sequencing (NGS) data, fastq .gz file")
+                .create(INPUT_GZ));
+
+        parameter.addOption(OptionBuilder.withArgName("input file split")
+                .hasArg().withDescription("Split input file for parallelization, use Hadoop FileInputFormat InputSplit")
+                .create(INPUT_SPLIT));
 
         parameter.addOption(OptionBuilder.withArgName("output file")
                 .hasArg().withDescription("Output line based file in text format")
@@ -140,12 +152,9 @@ public class Parameter {
 
             String value;
 
-            if ((value = cl.getOptionValue(INPUT_FASTQ)) != null){
+            if ((value = cl.getOptionValue(INPUT_BZ2)) != null){
                 param.inputFqPath = value;
-            }else{
-                help.printHelp();
-                System.exit(0);
-                //throw new IOException("Input query file not specified.\nUse -help for list of options");
+                param.bz2 = true;
             }
 
 			/* not applicable for HDFS and S3 */
@@ -155,6 +164,18 @@ public class Parameter {
 //				err.println("Input query file not found.");
 //				return;
 //i			}
+            if ((value = cl.getOptionValue(INPUT_GZ)) != null){
+                param.inputFqPath = value;
+                param.gz = true;
+            }else if (cl.getOptionValue(INPUT_BZ2) == null){
+                help.printHelp();
+                System.exit(0);
+                //throw new IOException("Input query file not specified.\nUse -help for list of options");
+            }
+
+            if ((value = cl.getOptionValue(INPUT_SPLIT)) != null){
+                param.splitsize = Long.decode(value);
+            }
 
             if ((value = cl.getOptionValue(OUTPUT_FILE)) != null){
                 param.outputPath = value;

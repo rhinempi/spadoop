@@ -5,12 +5,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigTextInputFormat;
+import org.apache.pig.bzip2r.Bzip2TextInputFormat;
 import uni.bielefeld.cmg.sparkhit.hadoop.decodec.util.DefaultParam;
 
 import java.io.IOException;
@@ -56,11 +57,19 @@ public class ShHadoopDecompressor implements ShDecompressor{
             job.setMapperClass(TokenizerMapper.class);
             job.setMapOutputValueClass(Text.class);
             job.setMapOutputKeyClass(Text.class);
-            job.setInputFormatClass(TextInputFormat.class);
+            if (param.bz2) {
+                job.setInputFormatClass(Bzip2TextInputFormat.class);
+            }else if (param.gz) {
+                job.setInputFormatClass(PigTextInputFormat.class);
+            }else{
+                job.setInputFormatClass(TextInputFormat.class);
+            }
             job.setOutputFormatClass(TextOutputFormat.class);
             job.setNumReduceTasks(0);
             FileInputFormat.addInputPath(job, inPath);
-            FileInputFormat.setMinInputSplitSize(job, 8000000);
+            if (param.splitsize > 0) {
+                Bzip2TextInputFormat.setMaxInputSplitSize(job, param.splitsize);
+            }
             FileOutputFormat.setOutputPath(job, outPath);
 
             exitstatus = job.waitForCompletion(true) ? 0 : 1;

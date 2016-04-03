@@ -69,7 +69,8 @@ public class HelpParam {
         err.println();
         err.println("Usage:");
         err.println("\tDeompressing BZip2 .bz2 file in parallel using Hadoop Mapper");
-        err.println(executable + " [parameters] -fastq hdfs://master/*/fastq.bz2 -outfile hdfs://master/out_dir");
+        err.println(executable + " [parameters] -bz2 hdfs://master/*/fastq.bz2 -outfile hdfs://master/out_dir");
+        err.println(executable + " [parameters] -gz hdfs://master/*/fastq.gz -outfile hdfs://master/out_dir");
         err.println();
     }
 }

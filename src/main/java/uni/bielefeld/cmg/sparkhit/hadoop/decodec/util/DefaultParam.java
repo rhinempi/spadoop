@@ -33,9 +33,12 @@ public class DefaultParam implements Serializable{
     }
 
     public String mightyName = "SparkHit";
+    public boolean bz2 = false;
+    public boolean gz = false;
     public String inputFqPath;              // undefaultable
     public String outputPath;
     public boolean overwrite = false;
+    public long splitsize = 0;
 
 
 }

@@ -47,7 +47,7 @@ public class TokenizerMapper extends Mapper<Object, Text, Text, String>
             }else if (lineMark == 1){
                 line = line + "\t" + s;
                 lineMark = 2;
-                word.set(s);
+                word.set(line);
                 try {
                     context.write(word, null);
                 } catch (IOException e) {
