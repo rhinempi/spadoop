@@ -1,7 +1,6 @@
 package uni.bielefeld.cmg.sparkhit.hadoop.decodec.sparkdoop;
 
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -31,7 +30,7 @@ import java.util.StringTokenizer;
  */
 
 
-public class TokenizerMapper extends Mapper<Object, Text, Text, String>
+public class TokenizerMapperFasta extends Mapper<Object, Text, Text, String>
 {
     private Text word = new Text();
     private int lineMark = 0;
@@ -45,7 +44,7 @@ public class TokenizerMapper extends Mapper<Object, Text, Text, String>
                 line = s;
                 lineMark = 1;
             }else if (lineMark == 1){
-                line = line + "\t" + s;
+                line = ">" + line + "\n" + s;
                 lineMark = 2;
                 word.set(line);
                 try {

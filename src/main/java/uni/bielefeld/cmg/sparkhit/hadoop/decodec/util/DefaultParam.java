@@ -37,6 +37,7 @@ public class DefaultParam implements Serializable{
     public boolean gz = false;
     public String inputFqPath;              // undefaultable
     public String outputPath;
+    public Integer outputFormat=0;
     public boolean overwrite = false;
     public long splitsize = 0;
 

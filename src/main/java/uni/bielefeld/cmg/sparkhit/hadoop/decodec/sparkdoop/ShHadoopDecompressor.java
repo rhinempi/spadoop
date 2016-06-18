@@ -54,7 +54,15 @@ public class ShHadoopDecompressor implements ShDecompressor{
             fs.delete(outPath, param.overwrite);
 
             job.setJarByClass(ShHadoopDecompressor.class);
-            job.setMapperClass(TokenizerMapper.class);
+            if (param.outputFormat == 0) {
+                job.setMapperClass(TokenizerMapper.class);
+            }else if (param.outputFormat == 1){
+                job.setMapperClass(TokenizerMapperFasta.class);
+            }else if (param.outputFormat == 2){
+                job.setMapperClass(TokenizerMapperFastq.class);
+            }else if (param.outputFormat == 3){
+                job.setMapperClass(TokenizerMapperLineQ.class);
+            }
             job.setMapOutputValueClass(Text.class);
             job.setMapOutputKeyClass(Text.class);
             if (param.bz2) {
@@ -67,8 +75,10 @@ public class ShHadoopDecompressor implements ShDecompressor{
             job.setOutputFormatClass(TextOutputFormat.class);
             job.setNumReduceTasks(0);
             FileInputFormat.addInputPath(job, inPath);
-            if (param.splitsize > 0) {
+            if (param.splitsize > 0 && param.splitsize <=128000000) {
                 Bzip2TextInputFormat.setMaxInputSplitSize(job, param.splitsize);
+            }else if (param.splitsize > 128000000){
+                Bzip2TextInputFormat.setMinInputSplitSize(job, param.splitsize);
             }
             FileOutputFormat.setOutputPath(job, outPath);
 

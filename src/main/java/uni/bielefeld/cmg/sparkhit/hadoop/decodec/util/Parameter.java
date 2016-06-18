@@ -91,7 +91,7 @@ public class Parameter {
                 .create(OUTPUT_FILE));
 
         parameter.addOption(OptionBuilder.withArgName("output file format")
-                .hasArg().withDescription("0 output fastq units in lines, 1 output fastq units to fasta, 2 still ouput fastq, default in 0")
+                .hasArg().withDescription("0 output fastq units in lines, 1 output fastq units to fasta, 2 still ouput fastq, 3 output fastq units in one line, default in 0")
                 .create(OUTPUT_FORMAT));
 
         parameter.addOption(OptionBuilder.withArgName("overwrite output")
@@ -186,6 +186,10 @@ public class Parameter {
 
             if (cl.hasOption(OUTPUT_OVERWRITE)){
                param.overwrite = true;
+            }
+
+            if ((value = cl.getOptionValue(OUTPUT_FORMAT)) != null){
+                param.outputFormat = Integer.decode(value);
             }
 
             File outfile = new File(param.outputPath).getAbsoluteFile();
