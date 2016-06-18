@@ -56,7 +56,7 @@ public class TokenizerMapper extends Mapper<Object, Text, Text, String>
                     e.printStackTrace();
                 }
             }else{
-                lineMark++;
+                lineMark=2;
             }
         }
     }

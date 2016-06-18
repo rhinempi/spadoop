@@ -67,8 +67,10 @@ public class ShHadoopDecompressor implements ShDecompressor{
             job.setOutputFormatClass(TextOutputFormat.class);
             job.setNumReduceTasks(0);
             FileInputFormat.addInputPath(job, inPath);
-            if (param.splitsize > 0) {
+            if (param.splitsize > 0 && param.splitsize <=128000000) {
                 Bzip2TextInputFormat.setMaxInputSplitSize(job, param.splitsize);
+            }else if (param.splitsize > 128000000){
+                Bzip2TextInputFormat.setMinInputSplitSize(job, param.splitsize);
             }
             FileOutputFormat.setOutputPath(job, outPath);
 
