@@ -37,16 +37,10 @@ public class TokenizerMapperLineQ extends Mapper<Object, Text, Text, String>
     private String line = "";
 
     public void map(Object key, Text value, Context context ){
-        StringTokenizer itr = new StringTokenizer(value.toString());
+        StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
         while (itr.hasMoreTokens()) {
             String s = itr.nextToken();
-            if (s.startsWith("@")){
-                line = s;
-                lineMark = 1;
-            }else if (lineMark == 1) {
-                line = line + "\t" + s;
-                lineMark = 2;
-            }else if (lineMark == 2) {
+            if (lineMark == 2) {
                 line = line + "\t" + s;
                 lineMark = 3;
             }else if (lineMark == 3) {
@@ -60,6 +54,12 @@ public class TokenizerMapperLineQ extends Mapper<Object, Text, Text, String>
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }else if (s.startsWith("@")){
+                line = s;
+                lineMark = 1;
+            }else if (lineMark == 1) {
+                line = line + "\t" + s;
+                lineMark = 2;
             }
         }
     }

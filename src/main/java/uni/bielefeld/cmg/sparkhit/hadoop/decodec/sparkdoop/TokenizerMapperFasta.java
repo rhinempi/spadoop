@@ -37,7 +37,7 @@ public class TokenizerMapperFasta extends Mapper<Object, Text, Text, String>
     private String line = "";
 
     public void map(Object key, Text value, Context context ){
-        StringTokenizer itr = new StringTokenizer(value.toString());
+        StringTokenizer itr = new StringTokenizer(value.toString(), "\n");
         while (itr.hasMoreTokens()) {
             String s = itr.nextToken();
             if (s.startsWith("@")){
